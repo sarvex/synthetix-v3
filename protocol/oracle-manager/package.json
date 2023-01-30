@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "test": "hardhat test",
+    "test:mainnet": "hardhat test --network mainnet",
     "coverage": "npx hardhat cannon:build && hardhat --network hardhat coverage",
     "build": "hardhat cannon:build",
     "compile-contracts": "hardhat compile",
