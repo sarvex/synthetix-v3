@@ -68,7 +68,7 @@ contract WrapperModule is IWrapperModule {
 
         // safe transfer?
         wrappingCollateral.transferFrom(msg.sender, address(this), wrapAmount);
-        wrappingCollateral.approve(spotMarketFactory.synthetix, wrapAmount);
+        wrappingCollateral.approve(address(spotMarketFactory.synthetix), wrapAmount);
         IMarketCollateralModule(spotMarketFactory.synthetix).depositMarketCollateral(
             marketId,
             wrapperStore.wrapCollateralType,

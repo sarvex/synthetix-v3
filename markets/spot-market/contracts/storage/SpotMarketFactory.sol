@@ -3,8 +3,7 @@ pragma solidity >=0.8.11 <0.9.0;
 
 import "@synthetixio/core-modules/contracts/interfaces/ITokenModule.sol";
 import "@synthetixio/oracle-manager/contracts/interfaces/INodeModule.sol";
-import "@synthetixio/main/contracts/interfaces/IMarketCollateralModule.sol";
-import "@synthetixio/main/contracts/interfaces/IMarketManagerModule.sol";
+import "../interfaces/external/ISynthetixSystem.sol";
 import "./Price.sol";
 
 /**
@@ -31,17 +30,23 @@ library SpotMarketFactory {
         /**
          * @dev Synthetix core v3 proxy address
          */
-        address synthetix;
+        ISynthetixSystem synthetix;
         /**
-         * @dev when synth is registered, this is the initial implementation address the proxy services.
+         * @dev when synth is registered, this is the implementation address the proxy services.
          */
-        address initialSynthImplementation;
+        address currentSynthImplementation;
         /**
          * @dev mapping of marketId to marketOwner
          */
         mapping(uint128 => address) marketOwners;
+
         /**
-         * @dev mapping of marketId to marketNominatedOwner
+         * @dev mapping of symbol (hashed) to market id
+         */
+        mapping(bytes32 => uint128) symbolToMarketId;
+
+        /**
+         * @dev ma)pping of marketId to marketNominatedOwner
          */
         mapping(uint128 => address) nominatedMarketOwners;
     }

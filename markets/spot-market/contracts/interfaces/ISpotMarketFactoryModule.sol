@@ -63,21 +63,22 @@ interface ISpotMarketFactoryModule is IMarket {
     function isInitialized() external returns (bool);
 
     /**
-     * @notice Initializes the factory with the required dependencies.
-     * @dev This function can only be called once.
+     * @notice Initializes the factory with the synthetix system it should register markets to.
      * @dev This function can only be called by the owner of the factory.
-     * @dev This function can only be called if the factory is not initialized.
-     * @dev The initial implementations are used as initial implementations when creating associated system.
-     * @param snxAddress configured synthetix v3 core system
-     * @param usdTokenAddress configured snxUSD token address
-     * @param oracleManager oracle manager used for retrieving pricing data
-     * @param initialSynthImplementation initial synth implementation used to initialize new synths when registering.
+     * @param synthetix configured synthetix v3 core system
      */
-    function initialize(
-        address snxAddress,
-        address usdTokenAddress,
-        address oracleManager,
-        address initialSynthImplementation
+    function setSynthetix(
+        ISynthetixSystem synthetix
+    ) external;
+
+
+    /**
+     * @notice Sets the address which should be used when calling `createOrUpgradeSynth` as the implementation address
+     * @dev This function can only be called by the owner of the factory.
+     * @param synthImplementation initial synth implementation used to initialize new synths when registering.
+     */
+    function setSynthImplementation(
+        address synthImplementation
     ) external;
 
     /**
@@ -89,7 +90,7 @@ interface ISpotMarketFactoryModule is IMarket {
      * @param synthOwner owner of the market that's created.
      * @return synthMarketId id of the synth market that was created
      */
-    function createSynth(
+    function createOrUpgradeSynth(
         string memory tokenName,
         string memory tokenSymbol,
         address synthOwner
@@ -104,6 +105,15 @@ interface ISpotMarketFactoryModule is IMarket {
     function getSynth(uint128 marketId) external view returns (address);
 
     /**
+     * @notice Get the marketId and address associated with a given symbol
+     * @param symbol the symbol to search for
+     * @return marketId the marketId as registered on the synthetix core system
+     * @return proxy the address of the erc20 token
+     */
+    function getSynthBySymbol(string memory symbol) external view returns (uint128 marketId, address proxy);
+    
+
+    /**
      * @notice Update the price data for a given market.
      * @dev Only the market owner can call this function.
      * @param synthMarketId id of the market
@@ -111,15 +121,6 @@ interface ISpotMarketFactoryModule is IMarket {
      * @param sellFeedId the oracle manager sell feed node id
      */
     function updatePriceData(uint128 synthMarketId, bytes32 buyFeedId, bytes32 sellFeedId) external;
-
-    /**
-     * @notice upgrades the synth implementation for a given market.
-     * @dev Only the market owner can call this function.
-     * @dev The synth implementation is upgraded via the proxy.
-     * @param marketId id of the market
-     * @param synthImpl new synth implementation
-     */
-    function upgradeSynthImpl(uint128 marketId, address synthImpl) external;
 
     /**
      * @notice Allows the current market owner to nominate a new owner.

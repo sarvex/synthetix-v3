@@ -3,7 +3,6 @@ pragma solidity >=0.8.11 <0.9.0;
 
 import "@synthetixio/main/contracts/interfaces/IMarketManagerModule.sol";
 import "@synthetixio/core-modules/contracts/modules/AssociatedSystemsModule.sol";
-import "@synthetixio/core-contracts/contracts/initializable/InitializableMixin.sol";
 import "@synthetixio/core-contracts/contracts/ownership/OwnableStorage.sol";
 import "@synthetixio/core-modules/contracts/interfaces/ITokenModule.sol";
 import "@synthetixio/oracle-manager/contracts/interfaces/INodeModule.sol";
@@ -19,8 +18,7 @@ import "../interfaces/ISpotMarketFactoryModule.sol";
  */
 contract SpotMarketFactoryModule is
     ISpotMarketFactoryModule,
-    AssociatedSystemsModule,
-    InitializableMixin
+    AssociatedSystemsModule
 {
     using DecimalMath for uint256;
     using SpotMarketFactory for SpotMarketFactory.Data;
@@ -29,64 +27,73 @@ contract SpotMarketFactoryModule is
 
     bytes32 private constant _CREATE_SYNTH_FEATURE_FLAG = "createSynth";
 
-    function _isInitialized() internal view override returns (bool) {
-        SpotMarketFactory.Data storage spotMarketFactory = SpotMarketFactory.load();
-        return
-            spotMarketFactory.synthetix != address(0) &&
-            spotMarketFactory.usdToken != ITokenModule(address(0));
-    }
-
     /**
      * @inheritdoc ISpotMarketFactoryModule
      */
-    function isInitialized() external view returns (bool) {
-        return _isInitialized();
-    }
-
-    /**
-     * @inheritdoc ISpotMarketFactoryModule
-     */
-    function initialize(
-        address snxAddress,
-        address usdTokenAddress,
-        address oracleManager,
-        address initialSynthImplementation
+    function setSynthetix(
+        ISynthetixSystem synthetix
     ) external override {
         OwnableStorage.onlyOwner();
         SpotMarketFactory.Data storage spotMarketFactory = SpotMarketFactory.load();
 
-        spotMarketFactory.synthetix = snxAddress;
-        spotMarketFactory.initialSynthImplementation = initialSynthImplementation;
+        spotMarketFactory.synthetix = synthetix;
+        (address usdTokenAddress, ) = synthetix.getAssociatedSystem("USDToken");
         spotMarketFactory.usdToken = ITokenModule(usdTokenAddress);
-        spotMarketFactory.oracle = INodeModule(oracleManager);
+        spotMarketFactory.oracle = synthetix.getOracleManager();
+    }
+
+    function setSynthImplementation(
+        address synthImplementation
+    ) external override {
+        OwnableStorage.onlyOwner();
+        SpotMarketFactory.Data storage spotMarketFactory = SpotMarketFactory.load();
+        spotMarketFactory.currentSynthImplementation = synthImplementation;
     }
 
     /**
      * @inheritdoc ISpotMarketFactoryModule
      */
-    function createSynth(
+    function createOrUpgradeSynth(
         string memory tokenName,
         string memory tokenSymbol,
         address synthOwner
-    ) external override onlyIfInitialized returns (uint128) {
+    ) external override returns (uint128) {
         FeatureFlag.ensureAccessToFeature(_CREATE_SYNTH_FEATURE_FLAG);
 
         SpotMarketFactory.Data storage spotMarketFactory = SpotMarketFactory.load();
-        uint128 synthMarketId = IMarketManagerModule(spotMarketFactory.synthetix).registerMarket(
-            address(this)
-        );
 
-        _initOrUpgradeToken(
-            SynthUtil.getSystemId(synthMarketId),
-            tokenName,
-            tokenSymbol,
-            18,
-            spotMarketFactory.initialSynthImplementation
-        );
+        uint128 synthMarketId = spotMarketFactory.symbolToMarketId[tokenSymbol];
 
-        spotMarketFactory.marketOwners[synthMarketId] = synthOwner;
+        if (synthMarketId == 0) {
+            synthMarketId = IMarketManagerModule(spotMarketFactory.synthetix).registerMarket(
+                address(this)
+            );
 
-        emit SynthRegistered(synthMarketId);
+            _initOrUpgradeToken(
+                SynthUtil.getSystemId(synthMarketId),
+                tokenName,
+                tokenSymbol,
+                18,
+                spotMarketFactory.currentSynthImplementation
+            );
+
+            spotMarketFactory.marketOwners[synthMarketId] = synthOwner;
+            spotMarketFactory.symbolToMarketId[tokenSymbol] = synthMarketId;
+
+            emit SynthRegistered(synthMarketId);
+        }
+        else {
+            // verify owner and just upgrade the implementation
+            spotMarketFactory.onlyMarketOwner(synthMarketId);
+
+            _initOrUpgradeToken(
+                SynthUtil.getSystemId(synthMarketId),
+                tokenName,
+                tokenSymbol,
+                18,
+                spotMarketFactory.currentSynthImplementation
+            );
+        }
 
         return synthMarketId;
     }
@@ -123,17 +130,10 @@ contract SpotMarketFactoryModule is
     /**
      * @inheritdoc ISpotMarketFactoryModule
      */
-    function upgradeSynthImpl(uint128 marketId, address synthImpl) external override {
-        SpotMarketFactory.load().onlyMarketOwner(marketId);
-
-        bytes32 synthId = SynthUtil.getSystemId(marketId);
-        _upgradeToken(synthId, synthImpl);
-
-        emit SynthImplementationUpgraded(
-            marketId,
-            address(SynthUtil.getToken(marketId)),
-            synthImpl
-        );
+    function getSynthBySymbol(string memory symbol) external view returns (uint128 marketId, address proxy) {
+        SpotMarketFactory.Data storage spotMarketFactory = SpotMarketFactory.load();
+        marketId = spotMarketFactory.symbolToMarketId[symbol];
+        proxy = address(SynthUtil.getToken(marketId));
     }
 
     /**

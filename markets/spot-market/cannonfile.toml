@@ -43,9 +43,6 @@ artifact = "SynthTokenModule"
 [contract.CoreModule]
 artifact = "contracts/modules/CoreModule.sol:CoreModule"
 
-[contract.FeatureFlagModule]
-artifact = "contracts/modules/FeatureFlagModule.sol:FeatureFlagModule"
-
 [contract.InitialSpotMarketProxy]
 artifact = "contracts/Proxy.sol:Proxy"
 args = ["<%= contracts.CoreModule.address %>", "<%= settings.owner %>"]
@@ -57,6 +54,7 @@ depends = ["contract.CoreModule"]
 [router.SpotMarketRouter]
 contracts = [
   "CoreModule",
+  "synthetix.FeatureFlagModule",
   "SpotMarketFactoryModule",
   "AtomicOrderModule",
   "AsyncOrderModule",
@@ -64,9 +62,9 @@ contracts = [
   "AsyncOrderConfigurationModule",
   "WrapperModule",
   "FeeConfigurationModule",
-  "FeatureFlagModule"
 ]
 depends = [
+  "import.synthetix",
   "contract.CoreModule",
   "contract.SpotMarketFactoryModule",
   "contract.AtomicOrderModule",
@@ -75,7 +73,6 @@ depends = [
   "contract.AsyncOrderConfigurationModule",
   "contract.WrapperModule",
   "contract.FeeConfigurationModule",
-  "contract.FeatureFlagModule",
 ]
 
 [invoke.upgrade_spot_market_proxy]
