@@ -42,7 +42,10 @@ contract AtomicOrderModule is IAtomicOrderModule {
             Transaction.Type.BUY
         );
 
-        spotMarketFactory.depositToMarketManager(marketId, amountUsable);
+        spotMarketFactory.depositToMarketManager(
+            marketId,
+            usdAmount > amountUsable ? amountUsable : usdAmount
+        );
 
         // Exchange amount after fees into synths to buyer
         uint256 synthAmount = Price.usdSynthExchangeRate(

@@ -8,6 +8,8 @@ import "../storage/FeeConfiguration.sol";
 import "../storage/AsyncOrder.sol";
 import "../utils/SynthUtil.sol";
 
+import "hardhat/console.sol";
+
 library FeeUtil {
     using SpotMarketFactory for SpotMarketFactory.Data;
     using SafeCastU256 for uint256;
@@ -128,6 +130,9 @@ library FeeUtil {
             Transaction.Type.BUY
         );
 
+        console.log("SKEW FEE");
+        console.logInt(skewFee);
+
         uint fixedFee = _getFixedFee(feeConfiguration, transactor, async);
 
         int totalFees = utilizationFee.toInt() + skewFee + fixedFee.toInt();
@@ -211,19 +216,18 @@ library FeeUtil {
             .getMarketCollateralAmount(marketId, wrapper.wrapCollateralType)
             .mulDecimal(synthPrice);
 
-        uint initialSkew = totalSynthValue - wrappedMarketCollateral;
-        uint initialSkewAdjustment = initialSkew.divDecimal(skewScaleValue);
+        int initialSkew = totalSynthValue.toInt() - wrappedMarketCollateral.toInt();
+        int initialSkewAdjustment = initialSkew.divDecimal(skewScaleValue.toInt());
 
-        uint skewAfterFill = initialSkew;
+        int skewAfterFill = initialSkew;
         if (isBuyTrade) {
-            skewAfterFill += amount;
+            skewAfterFill += amount.toInt();
         } else if (isSellTrade) {
-            skewAfterFill -= amount;
+            skewAfterFill -= amount.toInt();
         }
 
-        uint skewAfterFillAdjustment = skewAfterFill.divDecimal(skewScaleValue);
-        int skewAdjustmentAveragePercentage = (skewAfterFillAdjustment.toInt() +
-            initialSkewAdjustment.toInt()) / 2;
+        int skewAfterFillAdjustment = skewAfterFill.divDecimal(skewScaleValue.toInt());
+        int skewAdjustmentAveragePercentage = (skewAfterFillAdjustment + initialSkewAdjustment) / 2;
 
         skewFee = isSellTrade
             ? skewAdjustmentAveragePercentage * -1

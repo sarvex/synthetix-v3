@@ -214,7 +214,7 @@ export function bootstrapWithSynth(name: string, token: string) {
     await r
       .systems()
       .SpotMarket.connect(marketOwner)
-      .updatePriceData(marketId, r.oracleNodeId(), result.oracleNodeId);
+      .updatePriceData(marketId, r.oracleNodeId(), r.oracleNodeId());
   });
 
   // add weight to market from pool
