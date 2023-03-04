@@ -1,13 +1,11 @@
 {
-  "packages": [
-    "protocol/*",
-    "utils/*",
-    "markets/*"
-  ],
+  "npmClint": "pnpm",
+  "useWorkspaces": true,
   "command": {
     "bootstrap": {
       "hoist": true
     }
   },
-  "version": "independent"
+  "version": "independent",
+  "packages": ["protocol/*", "utils/*", "markets/*"]
 }
