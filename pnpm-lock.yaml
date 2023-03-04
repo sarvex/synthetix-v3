@@ -123,14 +123,20 @@ importers:
       '@synthetixio/common-config': 1.0.0
       '@synthetixio/core-contracts': 1.1.1
       '@synthetixio/core-modules': 1.0.0
+      '@types/node': 18.11.10
+      hardhat: ^2.13.0
       solidity-docgen: 0.6.0-beta.22
       ts-node: ^10.9.1
+      typescript: 4.9.3
     devDependencies:
       '@synthetixio/common-config': link:../../utils/common-config
       '@synthetixio/core-contracts': link:../../utils/core-contracts
       '@synthetixio/core-modules': link:../../utils/core-modules
-      solidity-docgen: 0.6.0-beta.22
-      ts-node: 10.9.1
+      '@types/node': 18.11.10
+      hardhat: 2.13.0_2dtigtkb225m7ii7q45utxqwgi
+      solidity-docgen: 0.6.0-beta.22_hardhat@2.13.0
+      ts-node: 10.9.1_eoe7put6ewfbqpy6gs36tihw6y
+      typescript: 4.9.3
 
   protocol/synthetix:
     specifiers:
@@ -295,13 +301,15 @@ importers:
       '@synthetixio/core-contracts': '*'
       '@synthetixio/core-modules': '*'
       '@synthetixio/hardhat-storage': '*'
+      hardhat: ^2.13.0
       hardhat-cannon: ^2.1.7
     devDependencies:
-      '@nomiclabs/hardhat-ethers': 2.2.1
+      '@nomiclabs/hardhat-ethers': 2.2.1_hardhat@2.13.0
       '@synthetixio/core-contracts': link:../core-contracts
       '@synthetixio/core-modules': link:../core-modules
       '@synthetixio/hardhat-storage': link:../hardhat-storage
-      hardhat-cannon: 2.1.7_7gctdethlkgq45orvhjhkha2he
+      hardhat: 2.13.0
+      hardhat-cannon: 2.1.7_3z474dof7abixsfj5y5c6mbhv4
 
   utils/solhint-plugin-numcast:
     specifiers: {}
@@ -1659,20 +1667,13 @@ packages:
       '@nomicfoundation/solidity-analyzer-win32-x64-msvc': 0.1.1
     dev: true
 
-  /@nomiclabs/hardhat-ethers/2.2.1:
-    resolution: {integrity: sha512-RHWYwnxryWR8hzRmU4Jm/q4gzvXpetUOJ4OPlwH2YARcDB+j79+yAYCwO0lN1SUOb4++oOTJEe6AWLEc42LIvg==}
-    peerDependencies:
-      ethers: ^5.0.0
-      hardhat: ^2.0.0
-    dev: true
-
   /@nomiclabs/hardhat-ethers/2.2.1_hardhat@2.13.0:
     resolution: {integrity: sha512-RHWYwnxryWR8hzRmU4Jm/q4gzvXpetUOJ4OPlwH2YARcDB+j79+yAYCwO0lN1SUOb4++oOTJEe6AWLEc42LIvg==}
     peerDependencies:
       ethers: ^5.0.0
       hardhat: ^2.0.0
     dependencies:
-      hardhat: 2.13.0_ts-node@10.9.1
+      hardhat: 2.13.0
     dev: true
 
   /@nomiclabs/hardhat-etherscan/3.1.3:
@@ -5964,7 +5965,7 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /hardhat-cannon/2.1.7_7gctdethlkgq45orvhjhkha2he:
+  /hardhat-cannon/2.1.7_3z474dof7abixsfj5y5c6mbhv4:
     resolution: {integrity: sha512-Ql9k9q9Z21BGLFMtDa7qMfL+w2UIGR1GgEkl+VCH6GC4+ljkUcLa3IeBnpbo9Zt38t+w19VF0Ck8tYq0Uft1Hw==}
     peerDependencies:
       '@nomiclabs/hardhat-ethers': ^2.0.0
@@ -5972,7 +5973,7 @@ packages:
       hardhat: ^2.0.0
     dependencies:
       '@iarna/toml': 3.0.0
-      '@nomiclabs/hardhat-ethers': 2.2.1
+      '@nomiclabs/hardhat-ethers': 2.2.1_hardhat@2.13.0
       '@usecannon/builder': 2.1.7_ethers@5.7.2
       '@usecannon/cli': 2.1.7
       adm-zip: 0.5.10
@@ -5982,6 +5983,7 @@ packages:
       ethereumjs-util: 7.1.5
       ethers: 5.7.2
       fs-extra: 10.1.0
+      hardhat: 2.13.0
       ipfs-http-client: 56.0.3
       lodash: 4.17.21
       merkle-patricia-tree: 4.2.4
@@ -6119,6 +6121,77 @@ packages:
       source-map-support: 0.5.21
       stacktrace-parser: 0.1.10
       tsort: 0.0.1
+      undici: 5.20.0
+      uuid: 8.3.2
+      ws: 7.5.9
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /hardhat/2.13.0_2dtigtkb225m7ii7q45utxqwgi:
+    resolution: {integrity: sha512-ZlzBOLML1QGlm6JWyVAG8lVTEAoOaVm1in/RU2zoGAnYEoD1Rp4T+ZMvrLNhHaaeS9hfjJ1gJUBfiDr4cx+htQ==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
+    peerDependencies:
+      ts-node: '*'
+      typescript: '*'
+    peerDependenciesMeta:
+      ts-node:
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@ethersproject/abi': 5.7.0
+      '@metamask/eth-sig-util': 4.0.1
+      '@nomicfoundation/ethereumjs-block': 4.0.0
+      '@nomicfoundation/ethereumjs-blockchain': 6.0.0
+      '@nomicfoundation/ethereumjs-common': 3.0.0
+      '@nomicfoundation/ethereumjs-evm': 1.0.0
+      '@nomicfoundation/ethereumjs-rlp': 4.0.0
+      '@nomicfoundation/ethereumjs-statemanager': 1.0.0
+      '@nomicfoundation/ethereumjs-trie': 5.0.0
+      '@nomicfoundation/ethereumjs-tx': 4.0.0
+      '@nomicfoundation/ethereumjs-util': 8.0.0
+      '@nomicfoundation/ethereumjs-vm': 6.0.0
+      '@nomicfoundation/solidity-analyzer': 0.1.1
+      '@sentry/node': 5.30.0
+      '@types/bn.js': 5.1.1
+      '@types/lru-cache': 5.1.1
+      abort-controller: 3.0.0
+      adm-zip: 0.4.16
+      aggregate-error: 3.1.0
+      ansi-escapes: 4.3.2
+      chalk: 2.4.2
+      chokidar: 3.5.3
+      ci-info: 2.0.0
+      debug: 4.3.4
+      enquirer: 2.3.6
+      env-paths: 2.2.1
+      ethereum-cryptography: 1.2.0
+      ethereumjs-abi: 0.6.8
+      find-up: 2.1.0
+      fp-ts: 1.19.3
+      fs-extra: 7.0.1
+      glob: 7.2.0
+      immutable: 4.2.4
+      io-ts: 1.10.4
+      keccak: 3.0.3
+      lodash: 4.17.21
+      mnemonist: 0.38.5
+      mocha: 10.2.0
+      p-map: 4.0.0
+      qs: 6.11.0
+      raw-body: 2.5.2
+      resolve: 1.17.0
+      semver: 6.3.0
+      solc: 0.7.3_debug@4.3.4
+      source-map-support: 0.5.21
+      stacktrace-parser: 0.1.10
+      ts-node: 10.9.1_eoe7put6ewfbqpy6gs36tihw6y
+      tsort: 0.0.1
+      typescript: 4.9.3
       undici: 5.20.0
       uuid: 8.3.2
       ws: 7.5.9
@@ -10192,7 +10265,7 @@ packages:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
     hasBin: true
     dependencies:
-      glob: 7.2.0
+      glob: 7.2.3
     dev: true
 
   /rimraf/3.0.2:
@@ -10693,6 +10766,16 @@ packages:
       hardhat: ^2.8.0
     dependencies:
       handlebars: 4.7.7
+      solidity-ast: 0.4.46
+    dev: true
+
+  /solidity-docgen/0.6.0-beta.22_hardhat@2.13.0:
+    resolution: {integrity: sha512-DDxyqsCHdOxPD+Pk/RBje/flxniVCcyPsc+fjmiPY/yUseebd09f+qGs085BF709MJ0XPFwIiU5t/cHze5/vng==}
+    peerDependencies:
+      hardhat: ^2.8.0
+    dependencies:
+      handlebars: 4.7.7
+      hardhat: 2.13.0_2dtigtkb225m7ii7q45utxqwgi
       solidity-ast: 0.4.46
     dev: true
 
@@ -11344,6 +11427,37 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    dev: true
+
+  /ts-node/10.9.1_eoe7put6ewfbqpy6gs36tihw6y:
+    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
+      typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.9
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.3
+      '@types/node': 18.11.10
+      acorn: 8.8.2
+      acorn-walk: 8.2.0
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 4.9.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
